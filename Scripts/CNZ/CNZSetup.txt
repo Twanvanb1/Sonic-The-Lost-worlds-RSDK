@@ -1,0 +1,892 @@
+// ----------------------------------
+// RSDK Project: Sonic 2
+// Script Description: CNZ Setup Object
+// Script Author: Christian Whitehead/Simon Thomley
+// Unpacked by Rubberduckycooly's script unpacker
+// ----------------------------------
+
+// Aliases
+private alias object.value1 : object.paletteTimer
+private alias object.value2 : object.paletteIndex1
+private alias object.value3 : object.paletteIndex2
+private alias object.value4 : object.paletteIndex3
+private alias object.value5 : object.deformTimer
+private alias object.value6 : object.sonicPlateFrameID
+private alias object.value7 : object.tailsPlateFrameID
+
+// Player Aliases
+private alias object.value1  : player.timer
+private alias object.value5  : player.customRollAnimSpeed
+private alias object.value14 : player.skidding
+private alias object.value29 : player.rollingFriction
+private alias object.value31 : player.rollingDeceleration	// Passive rolling deceleration - Without the player holding the opposite direction
+
+// Tracks
+private alias 0 : TRACK_STAGE
+private alias 1 : TRACK_ACTFINISH
+private alias 2 : TRACK_INVINCIBLE
+private alias 3 : TRACK_CONTINUE
+private alias 4 : TRACK_BOSS
+private alias 5 : TRACK_GAMEOVER
+private alias 6 : TRACK_DROWNING
+private alias 7 : TRACK_SUPER
+
+// Music Events
+private alias 25 : SLOT_MUSICEVENT_CHANGE
+private alias 26 : SLOT_MUSICEVENT_BOSS
+
+private alias  0 : MUSICEVENT_FADETOBOSS
+private alias  1 : MUSICEVENT_FADETOSTAGE
+private alias  2 : MUSICEVENT_TRANSITION
+
+private alias 0 : MUSICEVENT_FLAG_NOCHANGE
+private alias 1 : MUSICEVENT_FLAG_SPEEDUP
+private alias 2 : MUSICEVENT_FLAG_SLOWDOWN
+
+// Function declarations
+reserve function CNZSetup_TubeSwitch_Ground
+reserve function CNZSetup_TubeSwitch_Air
+reserve function CNZSetup_SpeedUpMusic1P
+reserve function CNZSetup_SlowDownMusic1P
+reserve function CNZSetup_SpeedUpMusic2P
+reserve function CNZSetup_SlowDownMusic2P
+
+// Tables
+public table CNZSetup_palCycleTable
+	0xE08000, 0xE0A000, 0xC0E000
+	0xE0E0E0, 0xA0E000, 0x40E000
+	0x00C060, 0x40C0C0, 0x0080E0
+	0x0040E0, 0x4000E0, 0x8000C0
+	0xE020C0, 0xE00080, 0xE00040
+	0xE00000, 0xE04000, 0xE06000
+end table
+
+public table CNZSetup_sonicPlateAniTileTable
+	390, 391, 394, 395
+	398, 399, 402, 403
+	406, 407, 410, 411
+	414, 415, 418, 419
+	422, 423, 426, 427
+	430, 431, 434, 435
+	438, 439, 442, 443
+	446, 447, 450, 451
+end table
+
+public table CNZSetup_tailsPlateAniTileTable
+	388, 389, 392, 393
+	396, 397, 400, 401
+	404, 405, 408, 409
+	412, 413, 416, 417
+	420, 421, 424, 425
+	428, 429, 432, 433
+	436, 437, 440, 441
+	444, 445, 448, 449
+end table
+
+public table CNZSetup_aniTileIndexTable
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+	1, 2, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4
+	4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4
+	4, 4, 4, 5, 6, 7, 0, 1, 2, 3, 4, 5, 6, 7
+	255
+end table
+
+public table CNZSetup_deformationTable
+	1, 2, 1, 3, 1, 2, 2, 1, 2, 3, 1, 2, 1, 2, 0, 0
+	2, 0, 3, 2, 2, 3, 2, 2, 1, 3, 0, 0, 1, 0, 1, 3
+	1, 2, 1, 3, 1, 2, 2, 1, 2, 3, 1, 2, 1, 2, 0, 0
+	2, 0, 3, 2, 2, 3, 2, 2, 1, 3, 0, 0, 1, 0, 1, 3
+end table
+
+private table CNZSetup_replay_attract_S
+	0x480000, 0x2AC0000
+	0b00000000, 73
+	0b00001000, 107
+	0b00000000, 1
+	0b00110000, 1
+	0b00100000, 3
+	0b00000000, 3
+	0b00000100, 20
+	0b00000000, 37
+	0b00000100, 23
+	0b00000000, 108
+	0b00000100, 23
+	0b00000000, 24
+	0b00001000, 60
+	0b00111000, 1
+	0b00101000, 31
+	0b00001000, 4
+	0b00000000, 9
+	0b00000100, 8
+	0b00000000, 41
+	0b00001000, 99
+	0b00000000, 2
+	0b00000100, 39
+	0b00000000, 18
+	0b00001000, 2
+	0b00000000, 9
+	0b00001000, 37
+	0b00111000, 1
+	0b00101000, 17
+	0b00100000, 6
+	0b00100100, 25
+	0b00100000, 5
+	0b00101000, 42
+	0b00100000, 8
+	0b00100100, 6
+	0b00100000, 3
+	0b00101000, 89
+	0b00100000, 1
+	0b00100100, 3
+	0b00000100, 37
+	0b00000000, 5
+	0b00001000, 45
+	0b00111000, 1
+	0b00101000, 3
+	0b00100000, 13
+	0b00101000, 8
+	0b00100000, 1
+	0b00100100, 2
+	0b00000100, 71
+	0b00000000, 115
+	0b00001000, 38
+	0b00000000, 14
+	0b00001000, 12
+	0b00000000, 1
+	0b00000100, 22
+	0b00000000, 30
+	0b00110000, 1
+	0b00100000, 2
+	0b00101000, 45
+	0b00100000, 9
+	0b00101000, 8
+	0b00001000, 51
+	0b00000000, 1
+	0b00000100, 106
+	0b00000000, 14
+	0b00000100, 9
+	0b00000000, 2
+	0b00000100, 14
+	0b00000000, 15
+	0b00000100, 18
+	0b00000000, 27
+end table
+
+private table CNZSetup_replay_attract_T
+	0x480000, 0x2B00000
+	0b00000000, 52
+	0b00001000, 105
+	0b00111000, 1
+	0b00100000, 3
+	0b00000000, 8
+	0b00000100, 20
+	0b00000000, 12
+	0b00001000, 10
+	0b00111000, 1
+	0b00101000, 41
+	0b00001000, 7
+	0b00000000, 6
+	0b00000100, 11
+	0b00000000, 3
+	0b00110000, 1
+	0b00100000, 4
+	0b00101000, 31
+	0b00001000, 73
+	0b00111000, 1
+	0b00101000, 65
+	0b00001000, 29
+	0b00000000, 20
+	0b00000100, 7
+	0b00000000, 2
+	0b00001000, 36
+	0b00111000, 1
+	0b00101000, 6
+	0b00001000, 11
+	0b00000000, 2
+	0b00110000, 1
+	0b00100000, 4
+	0b00101000, 5
+	0b00001000, 5
+	0b00111000, 1
+	0b00101000, 8
+	0b00001000, 6
+	0b00000000, 46
+	0b00001000, 114
+	0b00000000, 3
+	0b00000100, 51
+	0b00000000, 28
+	0b00001000, 27
+	0b00000000, 9
+	0b00000100, 9
+	0b00000000, 179
+	0b00001000, 38
+	0b00000000, 12
+	0b00001000, 17
+	0b00000000, 1
+	0b00000100, 4
+	0b00000000, 15
+	0b00000100, 9
+	0b00000000, 1
+	0b00001000, 15
+	0b00000000, 1
+	0b00000100, 15
+	0b00000000, 8
+	0b00000100, 18
+	0b00110100, 1
+	0b00100100, 5
+	0b00000100, 7
+	0b00110100, 1
+	0b00100100, 4
+	0b00000100, 5
+	0b00110000, 1
+	0b00100000, 4
+	0b00000000, 3
+	0b00110000, 1
+	0b00100000, 4
+	0b00101000, 3
+	0b00111000, 1
+	0b00101000, 4
+	0b00111000, 1
+	0b00100000, 4
+	0b00101000, 2
+	0b00001000, 1
+	0b00111000, 1
+	0b00101000, 3
+	0b00111000, 1
+	0b00101000, 4
+	0b00001000, 1
+	0b00110000, 1
+	0b00100000, 3
+	0b00110000, 1
+	0b00100000, 4
+	0b00110000, 1
+	0b00100000, 4
+	0b00110000, 1
+	0b00100000, 3
+	0b00000000, 1
+	0b00110000, 1
+	0b00100000, 3
+	0b00110000, 1
+	0b00100000, 4
+	0b00000000, 1
+	0b00110000, 1
+	0b00100000, 3
+	0b00110000, 1
+	0b00100000, 4
+	0b00110000, 1
+	0b00100000, 4
+	0b00110000, 1
+	0b00100000, 3
+	0b00000000, 1
+	0b00110000, 1
+	0b00100000, 3
+	0b00110000, 1
+	0b00100000, 6
+	0b00110000, 1
+	0b00100000, 1
+	0b00110000, 1
+	0b00100000, 6
+	0b00110000, 1
+	0b00100000, 3
+	0b00110000, 1
+	0b00100000, 2
+	0b00101000, 4
+	0b00111000, 1
+	0b00101000, 2
+	0b00111000, 1
+	0b00101000, 1
+	0b00100000, 6
+	0b00000000, 1
+	0b00110000, 1
+	0b00100000, 2
+	0b00110000, 1
+	0b00100000, 6
+	0b00110000, 1
+	0b00100000, 3
+	0b00110000, 1
+	0b00100000, 5
+	0b00000000, 1
+	0b00110000, 1
+	0b00100000, 2
+	0b00110000, 1
+	0b00100000, 5
+	0b00000000, 1
+	0b00110000, 1
+	0b00100000, 2
+	0b00110000, 1
+	0b00100000, 5
+	0b00000000, 1
+	0b00110000, 1
+	0b00100000, 3
+	0b00110000, 1
+	0b00100000, 5
+	0b00000000, 1
+	0b00110000, 1
+	0b00100000, 3
+	0b00110000, 1
+	0b00100000, 5
+	0b00110000, 1
+	0b00100000, 1
+	0b00101000, 3
+	0b00111000, 1
+	0b00101000, 4
+	0b00111000, 1
+	0b00101000, 1
+	0b00100000, 3
+	0b00110000, 1
+	0b00100000, 5
+	0b00110000, 1
+	0b00100000, 5
+	0b00110000, 1
+	0b00100000, 5
+	0b00000000, 1
+	0b00110000, 1
+	0b00100000, 2
+	0b00110000, 1
+	0b00100000, 4
+	0b00000000, 2
+	0b00110000, 1
+	0b00100000, 2
+	0b00110000, 1
+	0b00100000, 4
+	0b00110000, 1
+	0b00100000, 4
+	0b00110000, 1
+	0b00100000, 5
+	0b00100100, 1
+	0b00000100, 1
+	0b00110100, 1
+	0b00100100, 1
+	0b00110100, 1
+	0b00100100, 7
+	0b00000100, 1
+	0b00110100, 1
+	0b00100100, 2
+	0b00100000, 1
+	0b00110000, 1
+	0b00100000, 7
+	0b00000000, 1
+	0b00110100, 1
+	0b00100100, 3
+	0b00000100, 23
+	0b00110100, 1
+	0b00100000, 1
+	0b00101000, 2
+	0b00111000, 1
+	0b00101000, 7
+	0b00001000, 1
+	0b00111000, 1
+	0b00101000, 2
+	0b00111000, 1
+	0b00101000, 1
+	0b00100000, 4
+	0b00110000, 1
+	0b00100000, 5
+	0b00110000, 1
+	0b00100000, 3
+	0b00000000, 2
+	0b00110000, 1
+	0b00100000, 2
+	0b00110000, 1
+	0b00100000, 6
+	0b00000000, 2
+	0b00110000, 2
+	0b00100000, 7
+	0b00000000, 1
+	0b00110000, 1
+	0b00100000, 1
+	0b00110000, 1
+	0b00100000, 6
+	0b00110000, 1
+	0b00100000, 3
+	0b00110000, 1
+	0b00100000, 3
+	0b00110000, 1
+	0b00100000, 5
+	0b00110000, 1
+	0b00100000, 5
+	0b00000000, 1
+	0b00110000, 1
+	0b00100000, 2
+	0b00110000, 1
+	0b00100000, 6
+	0b00000000, 2
+	0b00110000, 2
+	0b00100000, 4
+	0b00101000, 3
+	0b00001000, 3
+	0b00110000, 1
+	0b00100000, 1
+	0b00110000, 1
+	0b00100100, 6
+	0b00000100, 2
+	0b00110100, 1
+	0b00100100, 1
+	0b00110100, 1
+	0b00100100, 7
+	0b00000100, 1
+	0b00110100, 1
+	0b00100100, 3
+	0b00110100, 1
+	0b00100100, 3
+	0b00000100, 10
+	0b00000000, 9
+	0b00001000, 10
+	0b00000000, 33
+	0b00001000, 5
+end table
+
+private table CNZSetup_replay_attract_K
+	0x480000, 0x2AC0000
+	0b00000000, 58
+	0b00001000, 133
+	0b00111000, 1
+	0b00101000, 12
+	0b00001000, 13
+	0b00111000, 1
+	0b00101000, 250
+	0b00001000, 32
+	0b00111000, 1
+	0b00101000, 5
+	0b00001000, 6
+	0b00000000, 9
+	0b00000100, 5
+	0b00000000, 15
+	0b00000100, 4
+	0b00000000, 8
+	0b00000100, 8
+	0b00000000, 5
+	0b00000100, 13
+	0b00000000, 25
+	0b00001000, 11
+	0b00000000, 3
+	0b00000100, 23
+	0b00000000, 4
+	0b00001000, 29
+	0b00110000, 1
+	0b00100100, 8
+	0b00000100, 1
+	0b00000000, 32
+	0b00000100, 27
+	0b00110100, 1
+	0b00100100, 2
+	0b00100000, 1
+	0b00000000, 19
+	0b00001000, 14
+	0b00000000, 10
+	0b00000100, 8
+	0b00110100, 1
+	0b00100100, 18
+	0b00100000, 2
+	0b00101000, 46
+	0b00100000, 1
+	0b00100100, 20
+	0b00100000, 1
+	0b00101000, 14
+	0b00101010, 43
+	0b00001010, 14
+	0b00111010, 1
+	0b00101010, 5
+	0b00001010, 2
+	0b00001000, 8
+	0b00000000, 11
+	0b00000100, 18
+	0b00110100, 1
+	0b00100100, 72
+	0b00100101, 17
+	0b00000101, 2
+	0b00000100, 34
+	0b00000000, 12
+	0b00000100, 3
+	0b00000000, 6
+	0b00000100, 102
+	0b00110100, 1
+	0b00100100, 3
+	0b00000100, 184
+	0b00110100, 1
+	0b00100100, 24
+	0b00000100, 7
+	0b00110100, 1
+	0b00100100, 10
+	0b00100101, 14
+	0b00100100, 23
+	0b00100101, 11
+	0b00100001, 2
+	0b00101001, 2
+	0b00001001, 10
+	0b00111001, 1
+	0b00101001, 11
+	0b00001001, 16
+	0b00111001, 1
+	0b00101001, 39
+	0b00101000, 2
+	0b00001000, 12
+	0b00111000, 1
+	0b00101000, 5
+	0b00100000, 10
+	0b00101000, 47
+	0b00100000, 1
+end table
+
+function CNZSetup_TubeSwitch_Ground
+	if object.gravity == GRAVITY_AIR
+		object.state = CNZSetup_TubeSwitch_Air
+		player.timer = 0
+		CallFunction(PlayerObject_HandleAirMovement)
+	else
+		temp1 = 0
+		GetBit(temp0, object.direction, 0)
+		if temp0 == false
+			if object.left == true
+				if object.speed > 0
+					object.speed -= player.rollingDeceleration
+				else
+					object.direction ^= FLIP_X
+					object.speed = -0x8000
+				end if
+			else
+				if object.angle == 0
+					if object.speed <= 0
+						object.speed = 0x40000
+					end if
+				end if
+			end if
+		else
+			if object.right == true
+				if object.speed < 0
+					object.speed += player.rollingDeceleration
+				else
+					object.direction ^= FLIP_X
+					object.speed = 0x8000
+				end if
+			else
+				if object.angle == 0
+					if object.speed >= 0
+						object.speed = -0x40000
+					end if
+				end if
+			end if
+		end if
+
+		if object.speed > 0
+			object.speed -= player.rollingFriction
+			Sin256(temp0, object.angle)
+			if temp0 > 0
+				Sin256(temp0, object.angle)
+				temp0 *= 0x5000
+			else
+				Sin256(temp0, object.angle)
+				temp0 *= 0x1E00
+			end if
+			temp0 >>= 8
+			object.speed += temp0
+		else
+			object.speed += player.rollingFriction
+			Sin256(temp0, object.angle)
+			if temp0 < 0
+				Sin256(temp0, object.angle)
+				temp0 *= 0x5000
+			else
+				Sin256(temp0, object.angle)
+				temp0 *= 0x1E00
+			end if
+			temp0 >>= 8
+			object.speed += temp0
+		end if
+
+		CallFunction(PlayerObject_RollAnimSpd)
+		object.animationSpeed = player.customRollAnimSpeed
+		CallFunction(PlayerObject_ResetOnFloor)
+	end if
+end function
+
+
+function CNZSetup_TubeSwitch_Air
+	CallFunction(PlayerObject_AirAcceleration)
+	if object.gravity == GRAVITY_AIR
+		CallFunction(PlayerObject_HandleAirMovement)
+	else
+		object.state = CNZSetup_TubeSwitch_Ground
+		CallFunction(PlayerObject_ResetOnFloor)
+		player.skidding = 0
+	end if
+	object.animation = ANI_JUMPING
+end function
+
+
+function CNZSetup_SpeedUpMusic1P
+	CheckEqual(object[SLOT_MUSICEVENT_CHANGE].type, TypeName[Music Event])
+	temp0 = checkResult
+	CheckEqual(object[SLOT_MUSICEVENT_CHANGE].propertyValue, 2)
+	temp0 &= checkResult
+	CheckEqual(stage.musicFlag, MUSICEVENT_FLAG_NOCHANGE)
+	temp0 &= checkResult
+	if temp0 == false
+		switch music.currentTrack
+		case TRACK_STAGE
+			SetMusicTrack("Invincibility_F.ogg", TRACK_INVINCIBLE, 30897)
+			SwapMusicTrack("CasinoNight_F.ogg", TRACK_STAGE, 50312, 8000)
+			break
+
+		case TRACK_INVINCIBLE
+			SetMusicTrack("CasinoNight_F.ogg", TRACK_STAGE, 50312)
+			SwapMusicTrack("Invincibility_F.ogg", TRACK_INVINCIBLE, 30897, 8000)
+			break
+
+		case TRACK_BOSS
+		case TRACK_DROWNING
+		case TRACK_SUPER
+			SetMusicTrack("CasinoNight_F.ogg", TRACK_STAGE, 50312)
+			SetMusicTrack("Invincibility_F.ogg", TRACK_INVINCIBLE, 30897)
+			break
+		end switch
+	else
+		stage.musicFlag = MUSICEVENT_FLAG_SPEEDUP
+	end if
+end function
+
+
+function CNZSetup_SlowDownMusic1P
+	CheckEqual(object[SLOT_MUSICEVENT_CHANGE].type, TypeName[Music Event])
+	temp0 = checkResult
+	CheckEqual(object[SLOT_MUSICEVENT_CHANGE].propertyValue, 2)
+	temp0 &= checkResult
+	CheckEqual(stage.musicFlag, MUSICEVENT_FLAG_NOCHANGE)
+	temp0 &= checkResult
+	if temp0 == false
+		switch music.currentTrack
+		case TRACK_STAGE
+			SetMusicTrack("Invincibility.ogg", TRACK_INVINCIBLE, 38679)
+			SwapMusicTrack("CasinoNight.ogg", TRACK_STAGE, 62820, 12500)
+			break
+
+		case TRACK_INVINCIBLE
+			SetMusicTrack("CasinoNight.ogg", TRACK_STAGE, 62820)
+			SwapMusicTrack("Invincibility.ogg", TRACK_INVINCIBLE, 38679, 12500)
+			break
+
+		case TRACK_BOSS
+		case TRACK_DROWNING
+		case TRACK_SUPER
+			SetMusicTrack("CasinoNight.ogg", TRACK_STAGE, 62820)
+			SetMusicTrack("Invincibility.ogg", TRACK_INVINCIBLE, 38679)
+			break
+		end switch
+	else
+		stage.musicFlag = MUSICEVENT_FLAG_SLOWDOWN
+	end if
+end function
+
+
+function CNZSetup_SpeedUpMusic2P
+	CheckEqual(object[SLOT_MUSICEVENT_CHANGE].type, TypeName[Music Event])
+	temp0 = checkResult
+	CheckEqual(object[SLOT_MUSICEVENT_CHANGE].propertyValue, 2)
+	temp0 &= checkResult
+	CheckEqual(stage.musicFlag, MUSICEVENT_FLAG_NOCHANGE)
+	temp0 &= checkResult
+	if temp0 == false
+		switch music.currentTrack
+		case TRACK_STAGE
+			SetMusicTrack("Invincibility_F.ogg", TRACK_INVINCIBLE, 30897)
+			SwapMusicTrack("CasinoNight2_F.ogg", TRACK_STAGE, 76718, 8000)
+			break
+
+		case TRACK_INVINCIBLE
+			SetMusicTrack("CasinoNight2_F.ogg", TRACK_STAGE, 76718)
+			SwapMusicTrack("Invincibility_F.ogg", TRACK_INVINCIBLE, 30897, 8000)
+			break
+
+		case TRACK_BOSS
+		case TRACK_DROWNING
+		case TRACK_SUPER
+			SetMusicTrack("CasinoNight2_F.ogg", TRACK_STAGE, 76718)
+			SetMusicTrack("Invincibility_F.ogg", TRACK_INVINCIBLE, 30897)
+			break
+		end switch
+	else
+		stage.musicFlag = MUSICEVENT_FLAG_SPEEDUP
+	end if
+end function
+
+
+function CNZSetup_SlowDownMusic2P
+	CheckEqual(object[SLOT_MUSICEVENT_CHANGE].type, TypeName[Music Event])
+	temp0 = checkResult
+	CheckEqual(object[SLOT_MUSICEVENT_CHANGE].propertyValue, 2)
+	temp0 &= checkResult
+	CheckEqual(stage.musicFlag, MUSICEVENT_FLAG_NOCHANGE)
+	temp0 &= checkResult
+	if temp0 == false
+		switch music.currentTrack
+		case TRACK_STAGE
+			SetMusicTrack("Invincibility.ogg", TRACK_INVINCIBLE, 38679)
+			SwapMusicTrack("CasinoNight2.ogg", TRACK_STAGE, 95868, 12500)
+			break
+
+		case TRACK_INVINCIBLE
+			SetMusicTrack("CasinoNight2.ogg", TRACK_STAGE, 95868)
+			SwapMusicTrack("Invincibility.ogg", TRACK_INVINCIBLE, 38679, 12500)
+			break
+
+		case TRACK_BOSS
+		case TRACK_DROWNING
+		case TRACK_SUPER
+			SetMusicTrack("CasinoNight2.ogg", TRACK_STAGE, 95868)
+			SetMusicTrack("Invincibility.ogg", TRACK_INVINCIBLE, 38679)
+			break
+		end switch
+	else
+		stage.musicFlag = MUSICEVENT_FLAG_SLOWDOWN
+	end if
+end function
+
+
+event ObjectMain
+	object.deformTimer++
+	if object.deformTimer > 7
+		tileLayer[1].deformationOffset++
+		object.deformTimer = 0
+	end if
+
+	object.paletteTimer++
+	if object.paletteTimer == 8
+		object.paletteTimer = 0
+		RotatePalette(0, 156, 158, true)
+		RotatePalette(0, 165, 167, true)
+		RotatePalette(0, 171, 173, true)
+		RotatePalette(0, 178, 180, false)
+
+		object.paletteIndex1++
+		object.paletteIndex1 %= 18
+		GetTableValue(temp0, object.paletteIndex1, CNZSetup_palCycleTable)
+		SetPaletteEntry(0, 187, temp0)
+
+		object.paletteIndex2++
+		object.paletteIndex2 %= 18
+		GetTableValue(temp0, object.paletteIndex2, CNZSetup_palCycleTable)
+		SetPaletteEntry(0, 186, temp0)
+
+		object.paletteIndex3++
+		object.paletteIndex3 %= 18
+		GetTableValue(temp0, object.paletteIndex3, CNZSetup_palCycleTable)
+		SetPaletteEntry(0, 185, temp0)
+		
+	end if
+
+	if object.animationTimer < 2
+		GetTableValue(temp0, object.sonicPlateFrameID, CNZSetup_aniTileIndexTable)
+		if temp0 == 0xFF
+			object.sonicPlateFrameID = 0
+			GetTableValue(temp0, object.sonicPlateFrameID, CNZSetup_aniTileIndexTable)
+		end if
+
+		temp0 <<= 2
+		GetTableValue(temp1, temp0, CNZSetup_sonicPlateAniTileTable)
+		Copy16x16Tile(760, temp1)
+
+		temp0++
+		GetTableValue(temp1, temp0, CNZSetup_sonicPlateAniTileTable)
+		Copy16x16Tile(761, temp1)
+
+		temp0++
+		GetTableValue(temp1, temp0, CNZSetup_sonicPlateAniTileTable)
+		Copy16x16Tile(762, temp1)
+
+		temp0++
+		GetTableValue(temp1, temp0, CNZSetup_sonicPlateAniTileTable)
+		Copy16x16Tile(763, temp1)
+
+		object.sonicPlateFrameID++
+
+		GetTableValue(temp0, object.tailsPlateFrameID, CNZSetup_aniTileIndexTable)
+		if temp0 == 0xFF
+			object.tailsPlateFrameID = 0
+			GetTableValue(temp0, object.tailsPlateFrameID, CNZSetup_aniTileIndexTable)
+		end if
+
+		temp0 <<= 2
+		GetTableValue(temp1, temp0, CNZSetup_tailsPlateAniTileTable)
+		Copy16x16Tile(764, temp1)
+
+		temp0++
+		GetTableValue(temp1, temp0, CNZSetup_tailsPlateAniTileTable)
+		Copy16x16Tile(765, temp1)
+
+		temp0++
+		GetTableValue(temp1, temp0, CNZSetup_tailsPlateAniTileTable)
+		Copy16x16Tile(766, temp1)
+		temp0++
+		GetTableValue(temp1, temp0, CNZSetup_tailsPlateAniTileTable)
+		Copy16x16Tile(767, temp1)
+
+		object.tailsPlateFrameID++
+		object.animationTimer = 6
+	else
+		object.animationTimer--
+	end if
+end event
+
+
+event ObjectStartup
+
+	SetMusicTrack("CasinoNight.ogg", TRACK_STAGE, 62820)
+	SpeedUpMusic = CNZSetup_SpeedUpMusic1P
+	SlowDownMusic = CNZSetup_SlowDownMusic1P
+
+
+	animalType1 = TypeName[Flicky]
+	animalType2 = TypeName[Becky]
+
+	arrayPos0 = 0
+	while arrayPos0 < 576
+		temp0 = arrayPos0
+		temp0 &= 0x3F
+		GetTableValue(stage.deformationData2[arrayPos0], temp0, CNZSetup_deformationTable)
+		arrayPos0++
+	loop
+
+	object[10].type 				= TypeName[CNZ Setup]
+	object[10].priority 			= PRIORITY_ACTIVE
+	object[10].paletteIndex2 		= 1
+	object[10].paletteIndex3 		= 2
+	object[10].tailsPlateFrameID 	= 70
+
+	if options.attractMode == true
+		switch stage.playerListPos
+		case PlayerName[SONIC]
+			PlayerObject_ReplayTable 	= CNZSetup_replay_attract_S
+			PlayerObject_ReplaySize 	= 142
+			PlayerObject_ReplayLength 	= 1800
+			break
+
+		case PlayerName[TAILS]
+			PlayerObject_ReplayTable 	= CNZSetup_replay_attract_T
+			PlayerObject_ReplaySize 	= 522
+			PlayerObject_ReplayLength 	= 1800
+			break
+
+		case PlayerName[KNUCKLES]
+			PlayerObject_ReplayTable 	= CNZSetup_replay_attract_K
+			PlayerObject_ReplaySize 	= 178
+			PlayerObject_ReplayLength 	= 1800
+			break
+		end switch
+
+		CallFunction(PlayerObject_InitReplay)
+	end if
+	
+	
+end event
+
+event RSDKDraw
+	DrawSprite(0)
+end event
+
+event RSDKLoad
+	LoadSpriteSheet("Global/Display.gif")
+	SpriteFrame(-16, -16, 32, 32, 1, 143)
+	
+	SetVariableAlias(ALIAS_VAR_PROPVAL, "unused")
+end event

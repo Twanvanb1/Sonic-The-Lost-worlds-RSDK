@@ -1,0 +1,178 @@
+// ----------------------------------
+// RSDK Project: Sonic 1/Sonic 2
+// Script Description: RZ Setup Object
+// Script Author: Christian Whitehead/Simon Thomley
+// Unpacked by Rubberduckycooly's script unpacker
+// ----------------------------------
+
+// Aliases
+private alias 40 : TYPE_RZSETUP
+private alias object.value5  : object.LavaDuration
+private alias object.value6  : object.LavaIndex
+
+// Function declarations
+reserve function RZSetup_SpeedUpMusic1P
+reserve function RZSetup_SlowDownMusic1P
+
+// Static Values
+
+
+// Tables
+private table RWZSetup_LavaLFrameTable
+	199, 251, 252, 253, 254
+end table
+
+private table RWZSetup_LavaRFrameTable
+	200, 256, 257, 258, 259
+end table
+
+private table RWZSetup_LavaFrameTable
+	206, 207, 223, 224, 206
+end table
+
+
+function RZSetup_SpeedUpMusic1P
+	CheckEqual(object[25].type, TypeName[Music Event])
+	temp0 = checkResult
+	CheckEqual(object[25].propertyValue, 2)
+	temp0 &= checkResult
+	CheckEqual(stage.musicFlag, 0)
+	temp0 &= checkResult
+	if temp0 == 0
+		switch music.currentTrack
+		case 0
+			SetMusicTrack("Invincibility_F.ogg", 2, 0x78B1)
+			SwapMusicTrack("MysticCave2_F.ogg", 0, 0x3BA8, 0x1F40)
+			break
+		case 2
+			SetMusicTrack("MysticCave2_F.ogg", 0, 0x3BA8)
+			SwapMusicTrack("Invincibility_F.ogg", 2, 0x78B1, 0x1F40)
+			break
+		case 4
+		case 6
+		case 7
+			SetMusicTrack("MysticCave2_F.ogg", 0, 0x3BA8)
+			SetMusicTrack("Invincibility_F.ogg", 2, 0x78B1)
+			break
+		end switch
+	else
+		stage.musicFlag = 1
+	end if
+end function
+
+
+function RZSetup_SlowDownMusic1P
+	CheckEqual(object[25].type, TypeName[Music Event])
+	temp0 = checkResult
+	CheckEqual(object[25].propertyValue, 2)
+	temp0 &= checkResult
+	CheckEqual(stage.musicFlag, 0)
+	temp0 &= checkResult
+	if temp0 == 0
+		switch music.currentTrack
+		case 0
+			SetMusicTrack("Invincibility.ogg", 2, 0x9717)
+			SwapMusicTrack("MysticCave2.ogg", 0, 0x48F0, 0x30D4)
+			break
+		case 2
+			SetMusicTrack("MysticCave2.ogg", 0, 0x48F0)
+			SwapMusicTrack("Invincibility.ogg", 2, 0x9717, 0x30D4)
+			break
+		case 4
+		case 6
+		case 7
+			SetMusicTrack("MysticCave2.ogg", 0, 0x48F0)
+			SetMusicTrack("Invincibility.ogg", 2, 0x9717)
+			break
+		end switch
+	else
+		stage.musicFlag = 2
+	end if
+end function
+
+event ObjectMain
+	if Stage.actnum == 1
+		if object.animationTimer < 2
+				GetTableValue(temp0, object.LavaIndex, RWZSetup_LavaLFrameTable)
+				Copy16x16Tile(199, temp0)
+				temp0 += 6
+				
+				GetTableValue(temp0, object.LavaIndex, RWZSetup_LavaRFrameTable)
+				Copy16x16Tile(200, temp0)
+				temp0 += 6
+				
+				GetTableValue(temp0, object.LavaIndex, RWZSetup_LavaFrameTable)
+				Copy16x16Tile(206, temp0)
+				temp0 += 6
+
+				GetTableValue(temp0, object.LavaIndex, RWZSetup_LavaFrameTable)
+				Copy16x16Tile(207, temp0)
+				temp0 += 6
+		
+				GetTableValue(object.LavaDuration, object.LavaIndex, RWZSetup_LavaLFrameTable)
+				object.LavaIndex++
+
+				object.LavaIndex %= 5
+				object.animationTimer = 12
+			else
+				object.animationTimer--
+		end if
+	end if
+	if Stage.actnum == 2
+			if object.animationTimer < 2
+					GetTableValue(temp0, object.LavaIndex, RWZSetup_LavaLFrameTable)
+					Copy16x16Tile(199, temp0)
+					temp0 += 6
+					
+					GetTableValue(temp0, object.LavaIndex, RWZSetup_LavaRFrameTable)
+					Copy16x16Tile(200, temp0)
+					temp0 += 6
+					
+					GetTableValue(temp0, object.LavaIndex, RWZSetup_LavaFrameTable)
+					Copy16x16Tile(206, temp0)
+					temp0 += 6
+
+					GetTableValue(temp0, object.LavaIndex, RWZSetup_LavaFrameTable)
+					Copy16x16Tile(207, temp0)
+					temp0 += 6
+			
+					GetTableValue(object.LavaDuration, object.LavaIndex, RWZSetup_LavaLFrameTable)
+					object.LavaIndex++
+
+					object.LavaIndex %= 5
+					object.animationTimer = 12
+				else
+					object.animationTimer--
+			end if
+		end if
+
+end event
+
+
+event ObjectStartup
+	SetMusicTrack("MysticCave2.ogg", 0, 0x48EF)
+	SpeedUpMusic = RZSetup_SpeedUpMusic1P
+	SlowDownMusic = RZSetup_SlowDownMusic1P
+	animalType1 = TypeName[Flicky]
+	animalType2 = TypeName[Ricky]
+	arrayPos0 = 0
+	object[10].type = TypeName[RZ Setup]
+	object[10].priority = PRIORITY_ACTIVE
+	if options.attractMode == true
+		switch stage.playerListPos
+		case 0
+		case 1
+		case 2
+		end switch
+		CallFunction(PlayerObject_InitReplay)
+	end if
+end event
+
+event RSDKDraw
+	DrawSprite(0)
+end event
+
+event RSDKLoad
+	LoadSpriteSheet("Global/Display.gif")
+	SpriteFrame(-16, -16, 32, 32, 1, 143)
+end event

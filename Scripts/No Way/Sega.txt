@@ -1,0 +1,194 @@
+// ----------------------------------
+// RSDK Project: Sonic 1/Sonic 2
+// Script Description: Sega Object
+// Script Author: Christan Whitehead/Simon Thomley
+// Unpacked by Rubberduckycooly's script unpacker
+// ----------------------------------
+
+//-------Aliases-------//
+private alias 1 : TYPE_SEGA
+public alias 256 : GROUP_PLAYERS
+public alias 65536 : HITBOX_AUTO
+public alias arrayPos6 : currentPlayer
+public alias arrayPos7 : playerCount
+
+private alias object.value0 : fade.control
+private alias object.value1 : nowayscroll
+private alias object.value2 : sonicwave
+private alias object.value3 : tailsblink
+private alias object.value4 : knuckleswink
+private alias object.value5 : robotniklaugh
+private alias -160 : bgx
+private alias -48 : bgy
+
+event ObjectMain	
+	switch object.state
+	case 0
+		fade.control = 320
+		SetScreenFade(0, 0, 0, fade.control)
+		object.state++
+		break
+	case 1
+		if fade.control > 0
+			fade.control -= 8
+		else
+			object.state++
+			PlayMusic(0)
+		end if
+		SetScreenFade(0, 0, 0, fade.control)
+		break
+	case 2
+	end switch
+end event
+
+
+event ObjectDraw
+	DrawRect(0, 0, screen.xsize, screen.ysize, 0, 0, 0, 255)
+	DrawSpriteScreenXY(0, screen.xcenter, screen.ycenter)
+	DrawSpriteScreenXY(12, screen.xcenter, 0)
+	nowayscroll++
+	nowayscroll %= 240
+	temp1 = nowayscroll
+	FlipSign(temp1)
+	while temp1 < screen.xsize
+		DrawSpriteScreenXY(1, temp1, 26)
+		temp1 += 104
+		temp1 += 20
+		DrawSpriteScreenXY(2, temp1, 26)
+		temp1 += 96
+		temp1 += 20
+	loop
+	
+	// Sonic Arm
+	temp1 = screen.xcenter
+	temp1 += bgx
+	temp1 += 128
+	temp0 = screen.ycenter
+	temp0 += bgy
+	temp0 += 24
+	sonicwave++
+	sonicwave %= 40
+	if sonicwave < 20
+		temp3 = 3
+	else
+		temp3 = 4
+	end if
+	DrawSpriteScreenXY(temp3, temp1, temp0)
+	
+	
+	// Tails
+	temp1 = screen.xcenter
+	temp1 += bgx
+	temp1 += 48
+	temp0 = screen.ycenter
+	temp0 += bgy
+	temp0 += 48
+	tailsblink++
+	tailsblink %= 76
+	switch tailsblink
+	case 64
+	case 65
+		temp3 = 6
+		break
+	case 66
+	case 67
+	case 68
+	case 69
+	case 70
+	case 71
+	case 72
+	case 73
+		temp3 = 7
+		break
+	case 74
+	case 75
+		temp3 = 6
+		break
+	default
+		temp3 = 5
+		break
+	end switch
+	DrawSpriteScreenXY(temp3, temp1, temp0)
+	
+	// Knuckles Eye
+	temp1 = screen.xcenter
+	temp1 += bgx
+	temp1 += 160
+	temp0 = screen.ycenter
+	temp0 += bgy
+	temp0 += 32
+	knuckleswink++
+	knuckleswink %= 80
+	if knuckleswink < 64
+		temp3 = 8
+	else
+		temp3 = 9
+	end if
+	DrawSpriteScreenXY(temp3, temp1, temp0)
+	
+	// Robotnik Laugh
+	temp1 = screen.xcenter
+	temp1 += bgx
+	temp1 += 216
+	temp0 = screen.ycenter
+	temp0 += bgy
+	robotniklaugh++
+	robotniklaugh %= 88
+	temp2 = robotniklaugh
+	temp2 /= 8
+	switch temp2
+	case 0
+	case 2
+	case 4
+	case 6
+		temp3 = 10
+		break
+	default
+		temp3 = 11
+		break
+	end switch
+	DrawSpriteScreenXY(temp3, temp1, temp0)
+end event
+
+
+event ObjectStartup
+	ReadSaveRAM()
+	LoadSpriteSheet("no way/End.gif")
+	SpriteFrame(bgx, bgy, 320, 128, 3, 4) //0 Mainbg
+	SpriteFrame(0, 0, 104, 16, 3, 227) //1 No Way?
+	SpriteFrame(0, 0, 96, 16, 195, 227) //2 No Way!
+	
+	//Sonic Arm	
+	SpriteFrame(0, 0, 24, 48, 83, 140) //3 arm1
+	SpriteFrame(0, 0, 24, 48, 115, 140) //4 arm2
+	
+	//Tails Eyes	
+	SpriteFrame(0, 0, 16, 16, 3, 140) //5 open
+	SpriteFrame(0, 0, 16, 16, 27, 140) //6 halfclosed
+	SpriteFrame(0, 0, 16, 16, 51, 140) //7 closed
+	
+	//Knuckles Eye
+	SpriteFrame(0, 0, 32, 24, 3, 164) //8 open
+	SpriteFrame(0, 0, 32, 24, 43, 164) //9 closed
+	
+	//Robotnik Laugh
+	SpriteFrame(0, 0, 64, 48, 219, 140) //10 up
+	SpriteFrame(0, 0, 64, 48, 147, 140) //11 down
+	
+	//S&K Logo
+	SpriteFrame(-45, 18, 90, 60, 3, 244) //12
+	
+	options.touchControls = 0
+	LoadPalette("noway.act", 7, 0, 0, 256)
+	SetActivePalette(7, 0, screen.ysize)
+	SetMusicTrack("Noway.ogg", 0, 61668)
+end event
+
+event RSDKDraw
+	DrawSprite(0)
+end event
+
+event RSDKLoad
+	LoadSpriteSheet("Global/Display.gif")
+	SpriteFrame(-16, -16, 32, 32, 1, 143)
+end event

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ObjDef xmlns="http://www.sonicretro.org" Image="sprite">
+  <Images>
+    <ImageFromSheet id="sprite" sheet="Global/Display.gif" sourcex="134" sourcey="18" width="16" height="16">
+      <Offset X="-8" Y="-8"/>
+    </ImageFromSheet>
+  </Images>
+  <Subtypes>
+    <Subtype id="00" name="Regular Adjust" image="sprite" />
+    <Subtype id="01" name="Box Adjust" image="sprite" />
+  </Subtypes>
+</ObjDef>
