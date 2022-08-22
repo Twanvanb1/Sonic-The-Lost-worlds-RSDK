@@ -1,10 +1,3 @@
-// ----------------------------------
-// RSDK Project: Sonic 1/Sonic 2
-// Script Description: Asteron Object
-// Script Author: Christian Whitehead/Simon Thomley
-// Unpacked by Rubberduckycooly's script unpacker
-// ----------------------------------
-
 // Aliases
 private alias 44 : TYPE_ASTERON
 
@@ -170,16 +163,10 @@ end event
 
 
 event ObjectStartup
-	CheckCurrentStageFolder("Zone04")
-	if checkResult == 1
-		LoadSpriteSheet("WHZ/Objects.gif")
-		SpriteFrame(-16, -14, 32, 28, 223, 1)
-		SpriteFrame(-16, -14, 32, 28, 190, 1)
-	else
-		LoadSpriteSheet("MPZ/Objects.gif")
-		SpriteFrame(-16, -14, 32, 28, 223, 1)
-		SpriteFrame(-16, -14, 32, 28, 190, 1)
-	end if
+	LoadSpriteSheet("WHZ/Objects.gif")
+	SpriteFrame(-16, -14, 32, 28, 84, 1)
+	SpriteFrame(-16, -14, 32, 28, 51, 1)
+	
 	foreach (TypeName[Asteron], arrayPos0, ALL_ENTITIES)
 		object[arrayPos0].value1 = object[arrayPos0].xpos
 		object[arrayPos0].value2 = object[arrayPos0].ypos

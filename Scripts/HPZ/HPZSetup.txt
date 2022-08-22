@@ -1,24 +1,26 @@
-// Aliases
+// ----------------------------------
+// RSDK Project: Sonic 1/Sonic 2
+// Script Description: HPZ Setup Object
+// Script Author: Christian Whitehead/Simon Thomley
+// Unpacked by Rubberduckycooly's script unpacker
+// ----------------------------------
+
+//-------Aliases-------//
 private alias 40 : TYPE_HPZSETUP
-private alias object.value0  : object.deformTimer
-private alias object.value1  : object.paletteTimer
 
 // Function declarations
 reserve function HPZSetup_Function97
-reserve function HPZSetup_InitSuperSonicPal
-reserve function HPZSetup_InitSuperTailsPal
-reserve function HPZSetup_InitSuperKnuxPal
-reserve function HPZSetup_SpeedUpMusic
-reserve function HPZSetup_SlowDownMusic
+reserve function HPZSetup_Function98
+reserve function HPZSetup_Function99
+reserve function HPZSetup_Function100
+reserve function HPZSetup_Function101
+reserve function HPZSetup_Function102
 
 // Static Values
 public value HPZSetup_value33 = 0;
 public value HPZSetup_value34 = 0;
 public value HPZSetup_value35 = 0;
 public value HPZSetup_value36 = 0;
-
-private alias HPZSetup_value33 : HPZSetup_flashTimer
-private alias HPZSetup_value34 : HPZSetup_bossEncounterFlag
 
 // Tables
 public table HPZSetup_table38
@@ -83,7 +85,7 @@ function HPZSetup_Function97
 end function
 
 
-function HPZSetup_InitSuperSonicPal
+function HPZSetup_Function98
 	temp0 = 0
 	GetPaletteEntry(1, 2, temp1)
 	SetTableValue(temp1, temp0, PlayerObject_SonicSuperAltPal)
@@ -128,7 +130,7 @@ function HPZSetup_InitSuperSonicPal
 end function
 
 
-function HPZSetup_InitSuperTailsPal
+function HPZSetup_Function99
 	temp0 = 0
 	GetPaletteEntry(1, 13, temp1)
 	SetTableValue(temp1, temp0, PlayerObject_TailsSuperAltPal)
@@ -283,7 +285,7 @@ function HPZSetup_InitSuperTailsPal
 end function
 
 
-function HPZSetup_InitSuperKnuxPal
+function HPZSetup_Function100
 	temp0 = 0
 	GetPaletteEntry(1, 26, temp1)
 	SetTableValue(temp1, temp0, PlayerObject_KnuxSuperAltPal)
@@ -297,105 +299,87 @@ function HPZSetup_InitSuperKnuxPal
 end function
 
 
-function HPZSetup_SpeedUpMusic
-
+function HPZSetup_Function101
 	CheckEqual(object[25].type, TypeName[Music Event])
 	temp0 = checkResult
-
 	CheckEqual(object[25].propertyValue, 2)
 	temp0 &= checkResult
-
 	CheckEqual(stage.musicFlag, 0)
 	temp0 &= checkResult
-
 	if temp0 == 0
 		switch music.currentTrack
 		case 0
 			SetMusicTrack("Invincibility_F.ogg", 2, 0x78B1)
 			SwapMusicTrack("MysticCave2_F.ogg", 0, 0x3BA8, 0x1F40)
 			break
-
 		case 2
 			SetMusicTrack("MysticCave2_F.ogg", 0, 0x3BA8)
 			SwapMusicTrack("Invincibility_F.ogg", 2, 0x78B1, 0x1F40)
 			break
-
 		case 4
 		case 6
 		case 7
 			SetMusicTrack("MysticCave2_F.ogg", 0, 0x3BA8)
 			SetMusicTrack("Invincibility_F.ogg", 2, 0x78B1)
 			break
-
 		end switch
 	else
 		stage.musicFlag = 1
 	end if
-
 end function
 
 
-function HPZSetup_SlowDownMusic
-
+function HPZSetup_Function102
 	CheckEqual(object[25].type, TypeName[Music Event])
 	temp0 = checkResult
-
 	CheckEqual(object[25].propertyValue, 2)
 	temp0 &= checkResult
-
 	CheckEqual(stage.musicFlag, 0)
 	temp0 &= checkResult
-
 	if temp0 == 0
 		switch music.currentTrack
 		case 0
 			SetMusicTrack("Invincibility.ogg", 2, 0x9717)
 			SwapMusicTrack("MysticCave2.ogg", 0, 0x48F0, 0x30D4)
 			break
-
 		case 2
 			SetMusicTrack("MysticCave2.ogg", 0, 0x48F0)
 			SwapMusicTrack("Invincibility.ogg", 2, 0x9717, 0x30D4)
 			break
-
 		case 4
 		case 6
 		case 7
 			SetMusicTrack("MysticCave2.ogg", 0, 0x48F0)
 			SetMusicTrack("Invincibility.ogg", 2, 0x9717)
 			break
-
 		end switch
 	else
 		stage.musicFlag = 2
 	end if
-
 end function
 
 
 event ObjectMain
-	if stage.actNum == 2
-		stage.newWaterLevel = 0x6080000
-	end if
-	
-	object.deformTimer++
-	if object.deformTimer == 2
-		tileLayer[0].deformationOffsetW++
+	if stage.actNum == 1
+		stage.newWaterLevel = 0x6140000
+	else
+		stage.newWaterLevel = 0x6140000
 	end if
 
-	if object.deformTimer == 4
+	object.value0++
+	if object.value0 == 2
+		tileLayer[0].deformationOffsetW++
+	end if
+	if object.value0 == 4
 		tileLayer[0].deformationOffsetW++
 		tileLayer[1].deformationOffsetW++
-		object.deformTimer = 0
+		object.value0 = 0
 	end if
-
-	object.paletteTimer++
-	if object.paletteTimer == 5
-		object.paletteTimer = 0
-		RotatePalette(0, 185, 188, true)
+	object.value1++
+	if object.value1 == 5
+		object.value1 = 0
+		RotatePalette(0, 185, 188, 1)
 	end if
-	
-	
 	if object.value2 < 2
 		GetTableValue(temp0, object.value3, HPZSetup_table38)
 		Copy16x16Tile(738, temp0)
@@ -480,8 +464,8 @@ event ObjectMain
 	else
 		object.value6--
 	end if
-	if HPZSetup_flashTimer > 0
-		HPZSetup_flashTimer--
+	if HPZSetup_value33 > 0
+		HPZSetup_value33--
 	end if
 	temp0 = object.value8
 	temp0 /= 6
@@ -525,6 +509,16 @@ event ObjectMain
 			object.value17 = 0
 		end if
 	end if
+	if HPZSetup_value36 == 0
+		if stage.debugMode == 0
+			if options.stageSelectFlag == 0
+				if object[30].type == TypeName[Act Finish]
+					HPZSetup_value36 = 1
+					CallNativeFunction2(SetAchievement, 7, 100)
+				end if
+			end if
+		end if
+	end if
 end event
 
 
@@ -538,7 +532,7 @@ event ObjectDraw
 		temp0 = screen.ysize
 	end if
 	SetActivePalette(0, 0, temp0)
-	if HPZSetup_flashTimer > 0
+	if HPZSetup_value33 > 0
 		SetActivePalette(2, temp0, screen.ysize)
 	else
 		SetActivePalette(1, temp0, screen.ysize)
@@ -548,48 +542,32 @@ end event
 
 
 event ObjectStartup
-
-	// Proto Palace Zone
 	SetMusicTrack("Extra.ogg", 0, 0xE9CC)
-
-	if stage.player2Enabled == true
+	if stage.player2Enabled == 1
 		object[1].xpos = object[0].xpos
 	end if
-
 	animalType1 = TypeName[Rocky]
 	animalType2 = TypeName[Mocky]
-
 	SetPaletteEntry(0, 192, 0)
-
 	object[10].type = TypeName[HPZ Setup]
 	object[10].priority = PRIORITY_ACTIVE
 	object[10].drawOrder = 0
 	object[10].value5 = 2
 	object[10].value7 = 4
-
-	// Load the water palette
 	LoadPalette("HPZ_WaterPal.act", 1, 0, 0, 256)
-
-	// Initialize the Super palettes
-	CallFunction(HPZSetup_InitSuperSonicPal)
-	CallFunction(HPZSetup_InitSuperTailsPal)
-	CallFunction(HPZSetup_InitSuperKnuxPal)
-
-	// Load the electric flash palette in case the player gets an eletric shield
+	CallFunction(HPZSetup_Function98)
+	CallFunction(HPZSetup_Function99)
+	CallFunction(HPZSetup_Function100)
 	LoadPalette("ElectricFlash.act", 2, 0, 0, 256)
-
-	HPZSetup_flashTimer = 0
-	HPZSetup_bossEncounterFlag = false
-
+	HPZSetup_value33 = 0
+	HPZSetup_value34 = 0
 	SetLayerDeformation(1, 64, 2, 0, 0, 0)
-
 	temp0 = 0
-	while temp0 < 0x100
+	while temp0 < 256
 		Rand(temp1, 4)
 		SetLayerDeformation(3, 16, temp1, 1, temp0, 16)
 		temp0 += 16
 	loop
-
 end event
 
 event RSDKDraw

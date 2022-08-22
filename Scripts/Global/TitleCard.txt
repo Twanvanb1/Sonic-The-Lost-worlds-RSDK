@@ -5,134 +5,104 @@
 // Unpacked by Rubberduckycooly's script unpacker
 // ----------------------------------
 
-// Aliases
-private alias object.value0 : object.timer
-private alias object.value6 : object.displayedActNo
-private alias object.value7 : object.vsReady
-private alias object.value8 : object.sentReadyFlag
+//-------Aliases-------//
+private alias 6 : TYPE_TITLECARD
+
 
 // Static Values
 public value TitleCard_value23 = 0;
 
-// Player Aliases
-private alias object.controlMode : player.controlMode
-private alias object.jumpPress 	 : player.jumpPress
-private alias object.jumpHold 	 : player.jumpHold
-private alias object.up 		 : player.up
-private alias object.down 		 : player.down
-private alias object.left 		 : player.left
-private alias object.right 		 : player.right
-private alias object.value1 	 : player.timer
-
-// Determines whether the act results will say got through zone or got through act [num]
-private alias TitleCard_value23 : TitleCard_showZoneText
+// Tables
 
 event ObjectMain
-
-	options.touchControls = false
-
+	options.touchControls = 0
 	switch object.state
 	case 0
-		object.alpha  = 0xFF
+		object.alpha = 255
 		object.value1 = 720
 		object.value2 -= 720
 		object.value4 = 432
 		object.value5 = -320
 		switch object.propertyValue
 		case 0
-			object.displayedActNo = stage.actNum
-			TitleCard_showZoneText = false
+			object.value6 = stage.actNum
+			TitleCard_value23 = 0
 			break
-
 		case 1
-			object.displayedActNo 	= 1
-			TitleCard_showZoneText 	= false
+			object.value6 = 1
+			TitleCard_value23 = 0
 			break
-
 		case 2
-			object.displayedActNo 	= 2
-			TitleCard_showZoneText 	= false
+			object.value6 = 2
+			TitleCard_value23 = 0
 			break
-
 		case 3
-			object.displayedActNo 	= 3
-			TitleCard_showZoneText 	= false
+			object.value6 = 3
+			TitleCard_value23 = 0
 			break
-
 		case 4
 			CheckCurrentStageFolder("Zone05")
 				if checkResult == true
 					if stage.actNum == 1
-						object.displayedActNo 	= 1
+						object.value6 	= 1
 					else
-						object.displayedActNo 	= 2
+						object.value6 	= 2
 					end if 
-					TitleCard_showZoneText = false
+					TitleCard_value23 = false
 				end if
 			break
 			
 		default
-			TitleCard_showZoneText = true
-			break
-
+			TitleCard_value23 = 1
 		end switch
-
-		if options.vsMode == true
-			object.vsReady 		 = false
-			object.sentReadyFlag = true
+		if options.vsMode == 1
+			object.value7 = 0
+			object.value8 = 1
 		else
-			object.vsReady 		 = true
-			object.sentReadyFlag = false
+			object.value7 = 1
+			object.value8 = 0
 		end if
-
 		if credits.screen > 0
 			object.state = 7
-			object.timer = 272
+			object.value0 = 272
 			stage.state = STAGE_RUNNING
 			SetScreenFade(0, 0, 0, 255)
 		else
 			object.state++
 		end if
 		break
-
 	case 1
-		if object.timer < 30
-			object.timer++
+		if object.value0 < 30
+			object.value0++
 		else
-			if options.vsMode == true
+			if options.vsMode == 1
 				CallNativeFunction2(SendEntity, object.entityPos, 0)
 				if ReceiveValue == -1
-					object.vsReady = true
+					object.value7 = 1
 				else
 					CallNativeFunction2(ReceiveEntity, 0x400, 1)
-					// we're ready to start if we got the other entity's 'sendReadyFlag'
-					object.vsReady = object[0x400].sentReadyFlag
+					object.value7 = object[1024].value8
 					ResetObjectEntity(0x400, TypeName[Blank Object], 0, 0, 0)
 				end if
 			end if
-
-			if object.vsReady == true
-				object.timer = 0
+			if object.value7 == 1
+				object.value0 = 0
 				PlayMusic(0)
 				object.state++
 			end if
 		end if
 		break
-
 	case 2
-		if options.vsMode == true
+		if options.vsMode == 1
 			CallNativeFunction2(SendEntity, object.entityPos, 0)
 		end if
-
 		if object.value3 < 240
 			object.value3 += 16
 		end if
-
 		if object.value4 > 0
 			object.value4 -= 16
 			object.value5 += 16
 		end if
-
 		if object.value1 > 0
 			object.value1 -= 16
 			object.value2 += 16
@@ -140,94 +110,88 @@ event ObjectMain
 			object.state++
 		end if
 		break
-
 	case 3
-		if object.timer < 60
-			if options.vsMode == true
+		if object.value0 < 60
+			if options.vsMode == 1
 				CallNativeFunction2(SendEntity, object.entityPos, 0)
 				CallNativeFunction2(ReceiveEntity, 0x400, 1)
 				ResetObjectEntity(0x400, TypeName[Blank Object], 0, 0, 0)
 			end if
-			object.timer++
+			object.value0++
 		else
-			object.timer = 0
+			object.value0 = 0
 			object.state++
 		end if
 		break
-
 	case 4
 		if object.value5 > -48
 			object.value5 -= 32
 		else
 			if object.value4 < 424
 				object.value4 += 32
-				if options.vsMode == true
+				if options.vsMode == 1
 					CallNativeFunction2(ReceiveEntity, 0x400, 1)
 					ResetObjectEntity(0x400, TypeName[Blank Object], 0, 0, 0)
 				end if
 			else
-				if options.vsMode == true
+				if options.vsMode == 1
 					stage.state = 4
 				else
 					stage.state = STAGE_RUNNING
 				end if
 				currentPlayer = 0
 				while currentPlayer < playerCount
-					player[currentPlayer].controlMode = -1
-					player[currentPlayer].up 		= false
-					player[currentPlayer].down 		= false
-					player[currentPlayer].left 		= false
-					player[currentPlayer].right 	= false
-					player[currentPlayer].jumpPress = false
-					player[currentPlayer].jumpHold 	= false
-					player[currentPlayer].timer 	= 0
+					object[currentPlayer].controlMode = -1
+					object[currentPlayer].up = 0
+					object[currentPlayer].down = 0
+					object[currentPlayer].left = 0
+					object[currentPlayer].right = 0
+					object[currentPlayer].jumpPress = 0
+					object[currentPlayer].jumpHold = 0
+					object[currentPlayer].value1 = 0
 					currentPlayer++
 				loop
 				object.state++
 			end if
 		end if
 		break
-
 	case 5
 		if object.value3 > 0
 			object.value3 -= 32
 		else
 			currentPlayer = 0
 			while currentPlayer < playerCount
-				player[currentPlayer].controlMode = 0
+				object[currentPlayer].controlMode = 0
 				currentPlayer++
 			loop
 			object.state++
 		end if
 		break
-
 	case 6
-		if object.timer < 48
-			object.timer++
+		if object.value0 < 48
+			object.value0++
 		else
-			object.timer = 0
-			stage.timeEnabled = true
+			object.value0 = 0
+			stage.timeEnabled = 1
 			object.state = 9
 		end if
 		break
-
 	case 7
-		if object.timer > 0
-			object.timer -= 16
-			SetScreenFade(0, 0, 0, object.timer)
+		if object.value0 > 0
+			object.value0 -= 16
+			SetScreenFade(0, 0, 0, object.value0)
 		else
 			currentPlayer = 0
 			while currentPlayer < playerCount
-				player[currentPlayer].controlMode = 0
+				object[currentPlayer].controlMode = 0
 				currentPlayer++
 			loop
 			ResetObjectEntity(object.entityPos, TypeName[Blank Object], 0, 0, 0)
 		end if
 		break
-
 	case 8
-		if object.timer < 300
-			object.timer += 5
+		if object.value0 < 300
+			object.value0 += 5
 			if credits.screen == 0
 				music.volume -= 2
 			end if
@@ -241,30 +205,26 @@ event ObjectMain
 			end if
 			LoadStage()
 		end if
-		SetScreenFade(0, 0, 0, object.timer)
+		SetScreenFade(0, 0, 0, object.value0)
 		break
-
 	case 9
 		object.value1 += 32
 		object.value2 -= 32
-		if object.timer < 20
-			object.timer++
+		if object.value0 < 20
+			object.value0++
 		else
-			object.timer = 0
+			object.value0 = 0
 			object.type = TypeName[Blank Object]
 		end if
 		break
-
 	end switch
 end event
 
 
 event ObjectDraw
-
 	temp2 = screen.xcenter
 	temp2 -= 160
 	temp2 >>= 1
-
 	switch object.state
 	case 0
 	case 1
@@ -273,7 +233,7 @@ event ObjectDraw
 		SetActivePalette(0, 0, screen.ysize)
 		DrawRect(0, 0, screen.xsize, object.value3, 32, 64, 192, 255)
 		DrawRect(0, object.value3, screen.xsize, screen.ysize, 0, 0, 0, 255)
-		if options.vsMode == true
+		if options.vsMode == 1
 			if object.state == 1
 				DrawSpriteScreenXY(32, screen.xsize, screen.ysize)
 			end if
@@ -303,7 +263,6 @@ event ObjectDraw
 			DrawSpriteScreenXY(temp1, temp0, 88)
 		end if
 		break
-
 	case 4
 	case 5
 		SetActivePalette(0, 0, screen.ysize)
@@ -333,7 +292,6 @@ event ObjectDraw
 			DrawSpriteScreenXY(temp1, temp0, 88)
 		end if
 		break
-
 	case 6
 	case 9
 		SetActivePalette(0, 0, screen.ysize)
@@ -361,10 +319,7 @@ end event
 
 
 event ObjectStartup
-
 	LoadSpriteSheet("Global/Display.gif")
-
-	// Title card frames
 	SpriteFrame(0, 0, 15, 16, 37, 79)
 	SpriteFrame(0, 0, 16, 16, 53, 79)
 	SpriteFrame(0, 0, 16, 16, 70, 79)
@@ -397,41 +352,31 @@ event ObjectStartup
 	SpriteFrame(63, 0, 23, 29, 59, 1)
 	SpriteFrame(63, 0, 23, 32, 42, 31)
 	SpriteFrame(0, 0, 140, 5, 37, 73)
-
 	if vs.playerID == 0
 		SpriteFrame(-160, -16, 136, 7, 110, 172)
 	else
 		SpriteFrame(-160, -16, 136, 7, 110, 164)
 	end if
-
-	if options.vsMode == true
+	if options.vsMode == 1
 		CallNativeFunction2(ReceiveEntity, 0x400, 1)
 		ResetObjectEntity(0x400, TypeName[Blank Object], 0, 0, 0)
 	end if
-
-	// Cycle through all Title Card objects
 	arrayPos0 = 32
 	while arrayPos0 < 0x420
 		if object[arrayPos0].type == TypeName[Title Card]
-			object[arrayPos0].priority 	= PRIORITY_ACTIVE_PAUSED
-			object[arrayPos0].alpha 	= 0xFF
+			object[arrayPos0].priority = PRIORITY_ACTIVE_PAUSED
+			object[arrayPos0].alpha = 255
 			object[arrayPos0].drawOrder = 6
 			stage.state = STAGE_PAUSED
-
 			if object[arrayPos0].propertyValue == 5
 				CheckCurrentStageFolder("ZoneM")
-				if checkResult == false
-
-					// If the object has a property value of 5 & we're in Egg Gauntet, then go back to the title screen
-					// (Purpose unknown, IDK why this exists)
+				if checkResult == 0
 					stage.activeList = PRESENTATION_STAGE
 					stage.listPos = 0
 					LoadStage()
-
 				end if
 			end if
 		end if
-
 		arrayPos0++
 	loop
 end event

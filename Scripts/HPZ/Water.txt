@@ -5,11 +5,8 @@
 // Unpacked by Rubberduckycooly's script unpacker
 // ----------------------------------
 
-// Aliases
+//-------Aliases-------//
 private alias 43 : TYPE_WATER
-
-private alias HPZSetup_value33 : HPZSetup_flashTimer
-private alias HPZSetup_value34 : HPZSetup_bossEncounterFlag
 
 // Function declarations
 reserve function Water_Function107
@@ -19,6 +16,8 @@ reserve function Water_Function109
 // Static Values
 public value Water_value37 = 0;
 public value Water_value38 = 0;
+
+// Tables
 
 function Water_Function107
 	if object[+currentPlayer].value1 > 0
@@ -106,7 +105,7 @@ event ObjectMain
 	temp1 = object[0].ypos
 	temp1 >>= 16
 	arrayPos0 = object.entityPos
-	if HPZSetup_bossEncounterFlag == false
+	if HPZSetup_value34 == 0
 		if object.ypos < stage.newWaterLevel
 			object.ypos += 0x20000
 		end if
@@ -185,13 +184,12 @@ event ObjectMain
 					arrayPos0 += playerCount
 					CallFunction(PlayerObject_RestorePowerup)
 				end if
-				// Player hit the water with a lightning shield - take their shield and electrocute the water
 				if object[currentPlayer].value37 == 4
 					object[currentPlayer].value37 = 0
 					arrayPos0 = currentPlayer
 					arrayPos0 += playerCount
 					CallFunction(PlayerObject_RestorePowerup)
-					HPZSetup_flashTimer = 4
+					HPZSetup_value33 = 4
 				end if
 			end if
 			if object[currentPlayer].value37 != 2
