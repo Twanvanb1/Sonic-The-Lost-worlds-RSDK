@@ -12,9 +12,11 @@
 + Cyber City Zone: Based off a piece of concept art.
 
 # FAQ
-### Q: I found a bug/I have a feature request!
-A: It's still a WIP so bugs are to be expected, submit them under the `issues`tab and i _will_ fix them.
+### Q: I found a bug!
+A: Submit them under the `issues` tab and i _will_ fix them.
 
+### Q: I have a feature request will you add it?
+A: Mostlikely not, this will be a straight port of the original romhack with some enhancements.
 
 # Special Thanks
 * [RubberDuckyCooly](https://github.com/Rubberduckycooly) for making the RSDKv4 decompilation.
