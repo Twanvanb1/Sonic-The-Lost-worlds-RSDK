@@ -2,6 +2,14 @@
 + This is a port of the romhack Sonic the Hedgehog - The Lost Worlds to RSDKv4
 + possible release date: 26 August (Same as the original)
 
+# Levels
++ Dust Hill Zone: Based off the single mock-up image found in magazines.
++ Rock Zone: Based off info found in a piece of concept art.
++ Wood Zone: Based off the design found in a prototype.
++ Winter Zone: Based off info from an interview. Includes Christmas trees.
++ Hidden Palace Zone: Based off design found in a prototype. Uses the intended music found in the final version of the game.
++ Casino Night Zone: Based off the design found in a prototype. Uses the music found in the prototype.
++ Cyber City Zone: Based off a piece of concept art.
 
 # FAQ
 ### Q: I found a bug/I have a feature request!
