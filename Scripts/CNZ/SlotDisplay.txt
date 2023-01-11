@@ -20,11 +20,11 @@ private alias 7 : SLOTPRIZE_SUPER // (Unused)
 
 // Static Values
 private value SlotDisplay_value38 = true
-private alias SlotDisplay_value38 : SlotDisplay_needsSetup
+private alias SlotDisplay_value38 : SlotDisplay_value38
 
-private alias SlotMachine_value34 : SlotMachine_slotPrizeL
-private alias SlotMachine_value35 : SlotMachine_slotPrizeM
-private alias SlotMachine_value36 : SlotMachine_slotPrizeR
+private alias SlotMachine_value34 : SlotMachine_value34
+private alias SlotMachine_value35 : SlotMachine_value35
+private alias SlotMachine_value36 : SlotMachine_value36
 
 // Tables
 
@@ -43,10 +43,10 @@ end table
 
 event ObjectDraw
 	// Slot L - Upper
-	temp0 = SlotMachine_slotPrizeL
+	temp0 = SlotMachine_value34
 	temp0 >>= 5
 	GetTableValue(temp1, temp0, SlotDisplay_sheetY_L)
-	temp0 = SlotMachine_slotPrizeL
+	temp0 = SlotMachine_value34
 	temp0 &= 31
 	temp2 = 32
 	temp2 -= temp0
@@ -55,12 +55,12 @@ event ObjectDraw
 	EditFrame(0, -48, object.prizePivot.y, 32, temp2, 1, temp1)
 
 	// Slot L - Lower
-	temp0 = SlotMachine_slotPrizeL
+	temp0 = SlotMachine_value34
 	temp0 >>= 5
 	temp0++
 	temp0 &= 7
 	GetTableValue(temp1, temp0, SlotDisplay_sheetY_L)
-	temp0 = SlotMachine_slotPrizeL
+	temp0 = SlotMachine_value34
 	temp0 &= 31
 	temp2 = 32
 	temp2 -= temp0
@@ -68,10 +68,10 @@ event ObjectDraw
 	EditFrame(1, -48, -16, 32, temp0, 1, temp1)
 
 	// Slot M - Upper
-	temp0 = SlotMachine_slotPrizeM
+	temp0 = SlotMachine_value35
 	temp0 >>= 5
 	GetTableValue(temp1, temp0, SlotDisplay_sheetY_M)
-	temp0 = SlotMachine_slotPrizeM
+	temp0 = SlotMachine_value35
 	temp0 &= 31
 	temp2 = 32
 	temp2 -= temp0
@@ -80,12 +80,12 @@ event ObjectDraw
 	EditFrame(2, -16, object.prizePivot.y, 32, temp2, 1, temp1)
 
 	// Slot M - Lower
-	temp0 = SlotMachine_slotPrizeM
+	temp0 = SlotMachine_value35
 	temp0 >>= 5
 	temp0++
 	temp0 &= 7
 	GetTableValue(temp1, temp0, SlotDisplay_sheetY_M)
-	temp0 = SlotMachine_slotPrizeM
+	temp0 = SlotMachine_value35
 	temp0 &= 31
 	temp2 = 32
 	temp2 -= temp0
@@ -93,10 +93,10 @@ event ObjectDraw
 	EditFrame(3, -16, -16, 32, temp0, 1, temp1)
 
 	// Slot R - Upper
-	temp0 = SlotMachine_slotPrizeR
+	temp0 = SlotMachine_value36
 	temp0 >>= 5
 	GetTableValue(temp1, temp0, SlotDisplay_sheetY_R)
-	temp0 = SlotMachine_slotPrizeR
+	temp0 = SlotMachine_value36
 	temp0 &= 31
 	temp2 = 32
 	temp2 -= temp0
@@ -105,12 +105,12 @@ event ObjectDraw
 	EditFrame(4, 16, object.prizePivot.y, 32, temp2, 1, temp1)
 
 	// Slot R - Lower
-	temp0 = SlotMachine_slotPrizeR
+	temp0 = SlotMachine_value36
 	temp0 >>= 5
 	temp0++
 	temp0 &= 7
 	GetTableValue(temp1, temp0, SlotDisplay_sheetY_R)
-	temp0 = SlotMachine_slotPrizeR
+	temp0 = SlotMachine_value36
 	temp0 &= 31
 	temp2 = 32
 	temp2 -= temp0
@@ -135,8 +135,8 @@ event ObjectStartup
 	SpriteFrame(-16, -16, 32, 32, 1, 256) // Slot R (Upper) - #4
 	SpriteFrame( 16, -16, 32, 32, 1, 256) // Slot R (Lower) - #5
 
-	if SlotDisplay_needsSetup == true
-		SlotDisplay_needsSetup = false
+	if SlotDisplay_value38 == true
+		SlotDisplay_value38 = false
 
 		temp0 = 0
 		while temp0 < 8

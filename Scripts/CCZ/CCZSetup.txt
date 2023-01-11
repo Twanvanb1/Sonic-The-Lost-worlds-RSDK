@@ -5,14 +5,19 @@ private alias object.value12 : object.palCycle2Timer
 private alias object.value13 : object.palCycle2Index
 
 private table CCZSetup_palCycle1
-	0xff4900,  0xA00000, 0xC00000, 0xA00000, 0x800000
+	0x000000, 0xc0a000, 0xe04000,  0x800000
 end table
 
 private table CCZSetup_palCycle2
-	0xff4900,  0xA00000, 0xC00000, 0xA00000, 0x800000
+	0xc0a000,  0xe04000, 0x800000, 0x000000
 end table
+	
 private table CCZSetup_palCycle3
-	0xff4900,  0xA00000, 0xC00000, 0xA00000, 0x800000
+	0xe04000,  0x800000, 0x000000, 0xc0a000
+end table
+
+private table CCZSetup_palCycle4	
+	0x800000,  0x000000, 0xc0a000, 0xe04000
 end table
 
 
@@ -20,17 +25,23 @@ event ObjectMain
 	object.value0++
 		if object.value0 > 7
 			object.value0 = 0
-			RotatePalette(0, 187, 191, true)
+			//RotatePalette(0, 187, 191, true)
 		end if
 	object.palCycle2Timer++
-		if object.palCycle2Timer >= 18
+		if object.palCycle2Timer >= 7
 			object.palCycle2Timer = 0
 			object.palCycle2Index++
-			if object.palCycle2Index >= 5
+			if object.palCycle2Index >= 4
 				object.palCycle2Index = 0
 			end if
 			GetTableValue(temp0, object.palCycle2Index, CCZSetup_palCycle1)
-			SetPaletteEntry(0, 134, temp0)
+			SetPaletteEntry(0, 191, temp0)
+			GetTableValue(temp0, object.palCycle2Index, CCZSetup_palCycle2)
+			SetPaletteEntry(0, 190, temp0)
+			GetTableValue(temp0, object.palCycle2Index, CCZSetup_palCycle3)
+			SetPaletteEntry(0, 188, temp0)
+			GetTableValue(temp0, object.palCycle2Index, CCZSetup_palCycle4)
+			SetPaletteEntry(0, 187, temp0)
 		end if
 end event
 
@@ -39,11 +50,11 @@ event ObjectDraw
 end event
 
 event ObjectStartup
-	SetMusicTrack("LavaReef2.ogg", 0, 467387)
 
-
+	SetMusicTrack("CasinoNight2.ogg", 0, 95868)
 	object[10].type = TypeName[CCZ Setup]
 	object[10].priority = PRIORITY_ACTIVE
+	
 end event
 
 event RSDKDraw

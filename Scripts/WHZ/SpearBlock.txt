@@ -150,10 +150,11 @@ end event
 
 event ObjectStartup
 	LoadSpriteSheet("WHZ/Objects.gif")
-	SpriteFrame(-4, -16, 8, 32, 34, 102)
-	SpriteFrame(-16, -4, 32, 8, 34, 84)
-	SpriteFrame(-4, -16, 8, 32, 43, 102)
-	SpriteFrame(-16, -4, 32, 8, 34, 93)
+	SpriteFrame(-4, -16, 8, 32, 51, 30)
+	SpriteFrame(-16, -4, 32, 8, 69, 30)
+	SpriteFrame(-4, -16, 8, 32, 60, 30)
+	SpriteFrame(-16, -4, 32, 8, 69, 39)
+	//block
 	SpriteFrame(-16, -16, 32, 32, 1, 1)
 	foreach (TypeName[Spear Block], arrayPos0, ALL_ENTITIES)
 		CallFunction(SpearBlock_Function137)

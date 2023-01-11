@@ -22,8 +22,8 @@ private alias 4 : CNZBOSSWALL_DISAPPEAR
 public value BossWall_value39 = 0;
 public value BossWall_value40 = 0;
 
-private alias BossWall_value39 : BossWall_wallChunkID
-private alias BossWall_value40 : BossWall_blankChunkID
+private alias BossWall_value39 : BossWall_value39
+private alias BossWall_value40 : BossWall_value40
 
 event ObjectMain
 	switch object.state
@@ -45,7 +45,7 @@ event ObjectMain
 		temp0 >>= 23
 		temp1 = object.ypos
 		temp1 >>= 23
-		SetTileLayerEntry(BossWall_wallChunkID, 0, temp0, temp1)
+		SetTileLayerEntry(BossWall_value39, 0, temp0, temp1)
 		object.state = CNZBOSSWALL_IDLE
 		break
 
@@ -54,7 +54,7 @@ event ObjectMain
 		temp0 >>= 23
 		temp1 = object.ypos
 		temp1 >>= 23
-		SetTileLayerEntry(BossWall_blankChunkID, 0, temp0, temp1)
+		SetTileLayerEntry(BossWall_value40, 0, temp0, temp1)
 		object.state++
 		break
 
@@ -89,8 +89,8 @@ end event
 event ObjectStartup
 	LoadSpriteSheet("CNZ/Objects.gif")
 	SpriteFrame(-64, -64, 128, 128, 127, 256)
-	BossWall_wallChunkID  = 225
-	BossWall_blankChunkID = 0
+	BossWall_value39  = 225
+	BossWall_value40 = 0
 
 	foreach (TypeName[Boss Wall], arrayPos0, ALL_ENTITIES)
 		object[arrayPos0].drawOrder = 4
@@ -104,7 +104,7 @@ event ObjectStartup
 			temp0 >>= 23
 			temp1 = object[arrayPos0].ypos
 			temp1 >>= 23
-			SetTileLayerEntry(BossWall_wallChunkID, 0, temp0, temp1)
+			SetTileLayerEntry(BossWall_value39, 0, temp0, temp1)
 		end if
 	next
 end event

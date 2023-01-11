@@ -29,7 +29,7 @@ private alias  2 : MUSICEVENT_TRANSITION
 // Static Values
 public value SlotPrize_value41 = 0
 
-private alias SlotPrize_value41 : SlotPrize_SpikeSfxTimer
+private alias SlotPrize_value41 : SlotPrize_value41
 
 event ObjectMain
 	temp0 = object.xpos
@@ -99,12 +99,12 @@ event ObjectMain
 						player[currentPlayer].rings--
 					end if
 
-					if SlotPrize_SpikeSfxTimer == 0
+					if SlotPrize_value41 == 0
 						PlaySfx(SfxName[Spike], false)
 					end if
 
-					SlotPrize_SpikeSfxTimer++
-					SlotPrize_SpikeSfxTimer %= 3
+					SlotPrize_value41++
+					SlotPrize_value41 %= 3
 					object.type = TypeName[Blank Object]
 				end if
 			else
@@ -134,7 +134,7 @@ event ObjectStartup
 	SpriteFrame(-8, -8, 16, 16, 110, 375)
 	SpriteFrame(-8, -8, 15, 15, 226, 34)
 
-	SlotPrize_SpikeSfxTimer = 0
+	SlotPrize_value41 = 0
 end event
 
 event RSDKDraw

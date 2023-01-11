@@ -20,7 +20,7 @@ private alias object.value10 : object.hasPerfectBonus
 private alias object.value11 : object.totalScore
 private alias object.value12 : object.hasContinue
 
-private alias TitleCard_value23 : TitleCard_showZoneText
+private alias TitleCard_value23 : TitleCard_value23
 
 // States
 private alias 0 : ACTFINISH_INIT
@@ -352,7 +352,7 @@ event ObjectDraw
 	DrawSpriteScreenXY(2, temp7, 82)
 
 	// Determine whether to show `got through zone` or `got through act`
-	if TitleCard_showZoneText == false
+	if TitleCard_value23 == false
 		DrawSpriteScreenXY(3, temp7, 82)
 		temp1 = stage.actNum
 		temp1 += 4

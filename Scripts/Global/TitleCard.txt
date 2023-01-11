@@ -25,7 +25,6 @@ private alias object.right 		 : player.right
 private alias object.value1 	 : player.timer
 
 // Determines whether the act results will say got through zone or got through act [num]
-private alias TitleCard_value23 : TitleCard_showZoneText
 
 event ObjectMain
 
@@ -41,38 +40,38 @@ event ObjectMain
 		switch object.propertyValue
 		case 0
 			object.displayedActNo = stage.actNum
-			TitleCard_showZoneText = false
+			TitleCard_value23 = false
 			break
 
 		case 1
 			object.displayedActNo 	= 1
-			TitleCard_showZoneText 	= false
+			TitleCard_value23 	= false
 			break
 
 		case 2
 			object.displayedActNo 	= 2
-			TitleCard_showZoneText 	= false
+			TitleCard_value23 	= false
 			break
 
 		case 3
 			object.displayedActNo 	= 3
-			TitleCard_showZoneText 	= false
+			TitleCard_value23 	= false
 			break
 
 		case 4
-			CheckCurrentStageFolder("Zone05")
+			CheckCurrentStageFolder("HPZ")
 				if checkResult == true
 					if stage.actNum == 1
 						object.displayedActNo 	= 1
 					else
 						object.displayedActNo 	= 2
 					end if 
-					TitleCard_showZoneText = false
+					TitleCard_value23 = false
 				end if
 			break
 			
 		default
-			TitleCard_showZoneText = true
+			TitleCard_value23 = true
 			break
 
 		end switch

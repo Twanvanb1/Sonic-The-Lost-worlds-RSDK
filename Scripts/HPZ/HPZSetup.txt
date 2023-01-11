@@ -17,8 +17,8 @@ public value HPZSetup_value34 = 0;
 public value HPZSetup_value35 = 0;
 public value HPZSetup_value36 = 0;
 
-private alias HPZSetup_value33 : HPZSetup_flashTimer
-private alias HPZSetup_value34 : HPZSetup_bossEncounterFlag
+private alias HPZSetup_value33 : HPZSetup_value33
+private alias HPZSetup_value34 : HPZSetup_value34
 
 // Tables
 public table HPZSetup_table38
@@ -480,8 +480,8 @@ event ObjectMain
 	else
 		object.value6--
 	end if
-	if HPZSetup_flashTimer > 0
-		HPZSetup_flashTimer--
+	if HPZSetup_value33 > 0
+		HPZSetup_value33--
 	end if
 	temp0 = object.value8
 	temp0 /= 6
@@ -538,7 +538,7 @@ event ObjectDraw
 		temp0 = screen.ysize
 	end if
 	SetActivePalette(0, 0, temp0)
-	if HPZSetup_flashTimer > 0
+	if HPZSetup_value33 > 0
 		SetActivePalette(2, temp0, screen.ysize)
 	else
 		SetActivePalette(1, temp0, screen.ysize)
@@ -578,8 +578,8 @@ event ObjectStartup
 	// Load the electric flash palette in case the player gets an eletric shield
 	LoadPalette("ElectricFlash.act", 2, 0, 0, 256)
 
-	HPZSetup_flashTimer = 0
-	HPZSetup_bossEncounterFlag = false
+	HPZSetup_value33 = 0
+	HPZSetup_value34 = false
 
 	SetLayerDeformation(1, 64, 2, 0, 0, 0)
 
